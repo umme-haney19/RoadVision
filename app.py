@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import random, shutil
 from PIL import Image
-from predictions import predict
 from pathlib import Path
 from datetime import datetime
 
@@ -102,6 +101,7 @@ def allowed_file(filename):
 
 @app.route("/predict_image/<filename>")
 def predict_image(filename):
+    from predictions import predict
     data_path = Path(UPLOAD_FOLDER)
     image_path = data_path / filename
     inp,res = predict(image_path, filename)

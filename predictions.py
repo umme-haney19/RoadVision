@@ -16,6 +16,30 @@ ACTIVATION = 'sigmoid'
 DEVICE = torch.device('cpu')
 torch.set_num_threads(1)
 
+# Load model only once
+checkpoint_path = './model/best_model.pth'
+
+checkpoint = torch.load(
+    checkpoint_path,
+    map_location=DEVICE,
+    weights_only=True
+)
+
+model = smp.Unet(
+    encoder_name=checkpoint['encoder'],
+    encoder_weights=None,
+    classes=checkpoint['classes'],
+    activation='sigmoid',
+    decoder_attention_type=checkpoint['attention']
+)
+
+model.load_state_dict(checkpoint['model_state_dict'])
+model.to(DEVICE)
+model.eval()
+
+del checkpoint
+gc.collect()
+
 # Preprocessing
 def preprocess_image(image):
     preprocessing_fn = smp.encoders.get_preprocessing_fn(
@@ -31,28 +55,6 @@ def preprocess_image(image):
 
 def predict(image_url, filename):
 
-    # Load checkpoint
-    checkpoint_path = './model/best_model.pth'
-
-    checkpoint = torch.load(
-        checkpoint_path,
-        map_location=DEVICE,
-        weights_only=True
-    )
-
-    # Create model architecture
-    model = smp.Unet(
-        encoder_name=checkpoint['encoder'],
-        encoder_weights=None,
-        classes=checkpoint['classes'],
-        activation='sigmoid',
-        decoder_attention_type=checkpoint['attention']
-    )
-
-    # Load trained weights
-    model.load_state_dict(checkpoint['model_state_dict'])
-    model.to(DEVICE)
-    model.eval()
 
     # Read uploaded image
     input_image = cv2.imread(image_url)
@@ -105,7 +107,7 @@ def predict(image_url, filename):
     )
 
     cv2.imwrite(output_path2, road_mask)
-    del model, checkpoint, image_tensor, output
+    del image_tensor, output, prediction, road_mask
     gc.collect()
     
     return output_path1, output_path2

@@ -1,0 +1,142 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Road Segmentation Results{% endblock title %}
+
+{% block body %}
+
+<style>
+    body {
+        background: #080f1e;
+        color: #e8eef8;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .results-section {
+        max-width: 1250px;
+        margin: 55px auto;
+        padding: 20px;
+    }
+
+    .results-heading {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .results-heading h1 {
+        font-size: 38px;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .results-heading span {
+        color: #b56cff;
+    }
+
+    .results-heading p {
+        color: #93a4bb;
+        margin-top: 12px;
+    }
+
+    .result-card {
+        background: #111e32;
+        border: 1px solid #49336b;
+        border-radius: 18px;
+        padding: 18px;
+        height: 100%;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .result-card:hover {
+        transform: translateY(-5px);
+        border-color: #b56cff;
+    }
+
+    .result-card img {
+        width: 100%;
+        height: 380px;
+        object-fit: contain;
+        background: #080f1e;
+        border-radius: 12px;
+    }
+
+    .result-label {
+        text-align: center;
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 18px;
+    }
+
+    .result-label i {
+        color: #b56cff;
+        margin-right: 8px;
+    }
+
+    .result-description {
+        text-align: center;
+        color: #93a4bb;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    @media(max-width: 768px) {
+        .results-heading h1 {
+            font-size: 28px;
+        }
+
+        .result-card img {
+            height: 280px;
+        }
+    }
+</style>
+
+<div class="results-section">
+
+    <div class="results-heading">
+        <h1>Road <span>Segmentation</span> Results</h1>
+        <p>Compare the original satellite image with the AI-generated road mask.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-6 col-md-12">
+            <div class="result-card">
+
+                <img src="../{{ src }}" alt="Original satellite image">
+
+                <div class="result-label">
+                    <i class="fa-solid fa-image"></i>
+                    Before Segmentation
+                </div>
+
+                <p class="result-description">
+                    Original satellite image
+                </p>
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12">
+            <div class="result-card">
+
+                <img src="../{{ res }}" alt="Predicted road segmentation mask">
+
+                <div class="result-label">
+                    <i class="fa-solid fa-road"></i>
+                    After Segmentation
+                </div>
+
+                <p class="result-description">
+                    AI-generated road detection mask
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock body %}

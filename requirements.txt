@@ -1,0 +1,8 @@
+Flask
+Flask-SQLAlchemy
+numpy
+opencv-python-headless
+torch
+segmentation-models-pytorch
+timm
+Pillow

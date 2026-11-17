@@ -1,0 +1,29 @@
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Dataset
+Datasets/
+
+# Database
+instance/
+*.db
+
+# Training checkpoint
+model/training_checkpoint.pth
+
+# Generated images
+static/uploads/*
+static/output/*
+static/res/*
+
+# Secrets
+.env
+
+# VS Code
+.vscode/
+
+# Test images
+testImages/

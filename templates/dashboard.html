@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Segmentation Detection | AI Platform</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #080f1e;
+            color: #e8eef8;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #0d1729;
+            border-bottom: 1px solid #1e2d45;
+            padding: 17px 7%;
+        }
+
+        .brand {
+            color: #ffffff;
+            font-size: 19px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .brand i {
+            color: #b56cff;
+            margin-right: 10px;
+        }
+
+        .signout {
+            color: #aab8cc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .signout:hover {
+            color: #b56cff;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 75px 20px 35px;
+        }
+
+        .tag {
+            display: inline-block;
+            color: #b56cff;
+            background: rgba(181, 108, 255, 0.09);
+            border: 1px solid rgba(181, 108, 255, 0.25);
+            border-radius: 30px;
+            padding: 9px 18px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 48px);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            color: #b56cff;
+        }
+
+        .hero p {
+            color: #93a4bb;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 650px;
+            margin: auto;
+        }
+
+        .upload-section {
+            max-width: 850px;
+            margin: 25px auto 70px;
+            padding: 0 20px;
+        }
+
+        .upload-card {
+            background: #111e32;
+            border: 1px solid #263851;
+            border-radius: 18px;
+            padding: 38px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        .upload-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .upload-icon {
+            width: 65px;
+            height: 65px;
+            background: rgba(181, 108, 255, 0.1);
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 18px;
+            color: #b56cff;
+            font-size: 27px;
+        }
+
+        .upload-heading h3 {
+            font-size: 21px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .upload-heading p {
+            color: #93a4bb;
+            font-size: 13px;
+        }
+
+        .file-label {
+            display: block;
+            color: #dce7f5;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .form-control {
+            background: #0b1526;
+            color: #dce7f5;
+            border: 1px solid #30445e;
+            border-radius: 10px;
+            padding: 13px;
+        }
+
+        .form-control:focus {
+            background: #0b1526;
+            color: white;
+            border-color: #b56cff;
+            box-shadow: 0 0 0 3px rgba(181, 108, 255, 0.12);
+        }
+
+        .form-control::file-selector-button {
+            background: #20334d;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: -8px 15px -8px -8px;
+            cursor: pointer;
+        }
+
+        .upload-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #087fba, #b56cff);
+            color: #061321;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            margin-top: 22px;
+            transition: 0.3s;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(181, 108, 255, 0.2);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature {
+            background: #111e32;
+            border: 1px solid #263851;
+            padding: 20px 12px;
+            text-align: center;
+            border-radius: 12px;
+        }
+
+        .feature i {
+            color: #b56cff;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .feature h6 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .feature p {
+            color: #8799b1;
+            font-size: 11px;
+            margin: 0;
+        }
+
+        /* Footer */
+        .page-footer {
+            background: #080b1a;
+            border-top: 1px solid #35245c;
+            text-align: center;
+            padding: 22px 10px;
+            color: #93a4bb;
+            font-size: 13px;
+            margin-top: 30px;
+        }
+
+        .page-footer span {
+            color: #bd5cff;
+            font-weight: 700;
+        }
+
+        .page-footer p {
+            margin: 7px 0 0;
+            font-size: 11px;
+        }
+
+        @media(max-width: 600px) {
+            .hero {
+                padding-top: 50px;
+            }
+
+            .upload-card {
+                padding: 25px 18px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar d-flex justify-content-between align-items-center">
+        <a href="/dashboard" class="brand">
+            <i class="fa-solid fa-road"></i>
+            RoadVision AI
+        </a>
+
+        <a href="{{ url_for('index') }}" class="signout">
+            <i class="fa-solid fa-right-from-bracket me-2"></i>
+            Sign Out
+        </a>
+    </nav>
+
+    <section class="hero">
+        <div class="tag">
+            <i class="fa-solid fa-brain me-2"></i>
+            AI POWERED IMAGE ANALYSIS
+        </div>
+
+        <h1>Intelligent <span>Road Segmentation</span></h1>
+
+        <p>
+            Transform satellite imagery into meaningful road networks
+            using Deep Learning and Attention-Assisted U-Net.
+            Upload an image and let our AI model identify road regions.
+        </p>
+    </section>
+
+    <section class="upload-section">
+
+        <div class="upload-card">
+
+            <div class="upload-heading">
+                <div class="upload-icon">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+
+                <h3>Upload Satellite Image</h3>
+
+                <p>Select an image to begin road detection and segmentation.</p>
+            </div>
+
+            <form action="/success" method="POST" enctype="multipart/form-data">
+
+                <label for="file" class="file-label">
+                    Choose your satellite image
+                </label>
+
+                <input
+                    type="file"
+                    class="form-control"
+                    id="file"
+                    name="file"
+                    accept=".tif,.tiff,.png,.jpg,.jpeg"
+                    required
+                >
+
+                <button type="submit" class="upload-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles me-2"></i>
+                    Analyze Image
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="features">
+
+            <div class="feature">
+                <i class="fa-solid fa-satellite"></i>
+                <h6>Satellite Images</h6>
+                <p>Upload aerial imagery</p>
+            </div>
+
+            <div class="feature">
+                <i class="fa-solid fa-network-wired"></i>
+                <h6>Deep Learning</h6>
+                <p>Attention-Assisted U-Net</p>
+            </div>
+
+            <div class="feature">
+                <i class="fa-solid fa-map"></i>
+                <h6>Road Extraction</h6>
+                <p>Generate road masks</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer class="page-footer">
+        Designed &amp; Developed by
+        <span>Umme Haney Sallauddin</span>
+        <p>© 2026 RoadVision AI | All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>

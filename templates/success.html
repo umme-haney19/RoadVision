@@ -1,0 +1,153 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Upload Successful | RoadVision AI{% endblock title %}
+
+{% block body %}
+
+<style>
+    .success-page {
+        min-height: 85vh;
+        background: #080b1a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .success-card {
+        width: 100%;
+        max-width: 650px;
+        background: #111a30;
+        border: 1px solid #39265f;
+        border-radius: 22px;
+        padding: 55px 40px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .success-icon {
+        width: 85px;
+        height: 85px;
+        margin: 0 auto 25px;
+        border-radius: 50%;
+        background: rgba(182, 92, 255, 0.12);
+        border: 1px solid rgba(182, 92, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #bd5cff;
+        font-size: 42px;
+    }
+
+    .success-card h1 {
+        color: #ffffff;
+        font-size: 29px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .success-card h1 span {
+        color: #bd5cff;
+    }
+
+    .success-description {
+        color: #93a4bb;
+        font-size: 14px;
+        line-height: 1.8;
+        margin-bottom: 30px;
+    }
+
+    .file-box {
+        background: #0b1224;
+        border: 1px solid #35245c;
+        border-radius: 12px;
+        padding: 17px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+
+    .file-label {
+        color: #bd8aff;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 7px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .file-name {
+        color: #ffffff;
+        font-size: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .prediction-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #7138d8, #bd5cff);
+        color: white;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+
+    .prediction-btn:hover {
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(182, 92, 255, 0.3);
+    }
+
+    .success-note {
+        color: #75869e;
+        font-size: 12px;
+        margin-top: 22px;
+        margin-bottom: 0;
+    }
+
+    @media(max-width: 600px) {
+        .success-card {
+            padding: 40px 22px;
+        }
+
+        .success-card h1 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<div class="success-page">
+    <div class="success-card">
+
+        <div class="success-icon">
+            &#10003;
+        </div>
+
+        <h1>Image Uploaded <span>Successfully!</span></h1>
+
+        <p class="success-description">
+            Your satellite image has been uploaded successfully.
+            It is now ready for AI-powered road detection and segmentation.
+        </p>
+
+        <div class="file-box">
+            <div class="file-label">Uploaded File</div>
+            <div class="file-name">{{ name }}</div>
+        </div>
+
+        <a href="/predict_image/{{ name }}" class="prediction-btn">
+            Start Road Segmentation &rarr;
+        </a>
+
+        <p class="success-note">
+            Powered by RoadVision AI | Attention-Assisted U-Net
+        </p>
+
+    </div>
+</div>
+
+{% endblock body %}

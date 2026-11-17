@@ -1,5 +1,6 @@
 
 import os
+import gc
 import cv2
 import numpy as np
 import torch
@@ -103,5 +104,7 @@ def predict(image_url, filename):
     )
 
     cv2.imwrite(output_path2, road_mask)
-
+    del model, checkpoint, image_tensor, output
+    gc.collect()
+    
     return output_path1, output_path2

@@ -14,6 +14,7 @@ CLASSES = 1
 ACTIVATION = 'sigmoid'
 
 DEVICE = torch.device('cpu')
+torch.set_num_threads(1)
 
 # Preprocessing
 def preprocess_image(image):

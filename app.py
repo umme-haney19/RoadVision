@@ -94,6 +94,7 @@ def success():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('download_file', name=filename))
+    return redirect(url_for('dashboard'))
 
 def allowed_file(filename):
     return '.' in filename and \

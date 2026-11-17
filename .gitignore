@@ -8,7 +8,7 @@ venv/
 Datasets/
 
 # Database
-instance/
+instance/s
 *.db
 
 # Training checkpoint

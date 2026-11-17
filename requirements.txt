@@ -6,3 +6,4 @@ torch
 segmentation-models-pytorch
 timm
 Pillow
+gunicorn

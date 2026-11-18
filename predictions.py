@@ -20,7 +20,8 @@ checkpoint_path = './model/best_model.pth'
 checkpoint = torch.load(
     checkpoint_path,
     map_location=DEVICE,
-    weights_only=True
+    weights_only=True,
+    mmap=True
 )
 
 model = smp.Unet(
@@ -31,7 +32,7 @@ model = smp.Unet(
     decoder_attention_type=checkpoint['attention']
 )
 
-model.load_state_dict(checkpoint['model_state_dict'])
+model.load_state_dict(checkpoint['model_state_dict'], assign=True)
 model.to(DEVICE)
 model.eval()
 

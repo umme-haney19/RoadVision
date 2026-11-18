@@ -13,6 +13,7 @@ DEVICE = torch.device('cpu')
 
 torch.set_num_threads(1)
 torch.set_num_interop_threads(1)
+torch.backends.mkldnn.enabled = False
 
 # Load model only once
 checkpoint_path = './model/best_model.pth'

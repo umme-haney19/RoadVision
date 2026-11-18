@@ -83,7 +83,7 @@ def predict(image_url, filename):
     # Resize before preprocessing
     small_image = cv2.resize(
     input_image,
-    (128, 128),
+    (64, 64),
     interpolation=cv2.INTER_AREA
 )
 

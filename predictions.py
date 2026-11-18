@@ -58,7 +58,10 @@ def preprocess_image(image):
 def predict(image_url, filename):
 
     # Read uploaded image
-    input_image = cv2.imread(image_url)
+    input_image = cv2.imread(
+    image_url,
+    cv2.IMREAD_REDUCED_COLOR_8
+)
 
     if input_image is None:
         raise ValueError("Unable to read uploaded image")

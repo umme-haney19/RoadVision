@@ -1,5 +1,11 @@
-
 import os
+
+# Reduce CPU thread memory overhead
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MALLOC_ARENA_MAX"] = "2"
+
 import gc
 import cv2
 import numpy as np

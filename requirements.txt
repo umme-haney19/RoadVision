@@ -5,3 +5,5 @@ opencv-python-headless
 onnxruntime
 Pillow
 gunicorn
+torch
+segmentation-models-pytorch

@@ -1,77 +1,88 @@
-
 import os
-
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-os.environ["MALLOC_ARENA_MAX"] = "2"
-
 import gc
-from pathlib import Path
-
 import cv2
 import numpy as np
-import onnxruntime as ort
+import torch
+import segmentation_models_pytorch as smp
+from pathlib import Path
 
-# ONNX Runtime configuration
-options = ort.SessionOptions()
-options.intra_op_num_threads = 1
-options.inter_op_num_threads = 1
-options.graph_optimization_level = (
-    ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+# Model configuration
+ENCODER = 'resnet34'
+DEVICE = torch.device('cpu')
+
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
+torch.backends.mkldnn.enabled = False
+
+# Load model only once
+checkpoint_path = './model/best_model.pth'
+
+checkpoint = torch.load(
+    checkpoint_path,
+    map_location=DEVICE,
+    weights_only=True,
+    mmap=True
 )
 
-session = ort.InferenceSession(
-    "roadvision.onnx",
-    sess_options=options,
-    providers=["CPUExecutionProvider"]
+model = smp.Unet(
+    encoder_name=checkpoint['encoder'],
+    encoder_weights=None,
+    classes=checkpoint['classes'],
+    activation='sigmoid',
+    decoder_attention_type=checkpoint['attention']
 )
 
-input_name = session.get_inputs()[0].name
+model.load_state_dict(checkpoint['model_state_dict'], assign=True)
+model.to(DEVICE)
+model.eval()
 
-# ResNet34 ImageNet preprocessing
+del checkpoint
+gc.collect()
+
+
+# Preprocessing
 def preprocess_image(image):
-    image = image.astype(np.float32) / 255.0
 
-    mean = np.array(
-        [0.485, 0.456, 0.406],
-        dtype=np.float32
-    )
-    std = np.array(
-        [0.229, 0.224, 0.225],
-        dtype=np.float32
+    preprocessing_fn = smp.encoders.get_preprocessing_fn(
+        ENCODER, 'imagenet'
     )
 
-    image = (image - mean) / std
-    image = image.transpose(2, 0, 1)
+    image = preprocessing_fn(image)
+    image = image.transpose(2, 0, 1).astype('float32')
 
-    return np.ascontiguousarray(image, dtype=np.float32)
+    return image
 
 
+# Prediction
 def predict(image_url, filename):
 
+    # Read uploaded image
     input_image = cv2.imread(
-        str(image_url),
-        cv2.IMREAD_REDUCED_COLOR_8
-    )
+    image_url,
+    cv2.IMREAD_REDUCED_COLOR_8
+)
 
     if input_image is None:
         raise ValueError("Unable to read uploaded image")
 
+    # Store original dimensions
     original_height, original_width = input_image.shape[:2]
 
-    os.makedirs("static/output", exist_ok=True)
-    os.makedirs("static/res", exist_ok=True)
+    # Create output folders
+    os.makedirs('static/output', exist_ok=True)
+    os.makedirs('static/res', exist_ok=True)
 
-    stem = Path(filename).stem
-
-    output_path1 = f"static/output/{stem}.png"
-    output_path2 = f"static/res/{stem}.png"
+    # Save original image
+    output_path1 = (
+        'static/output/' + Path(filename).stem + '.png'
+    )
 
     cv2.imwrite(output_path1, input_image)
 
+    # Resize before preprocessing
     small_image = cv2.resize(
         input_image,
-        (64, 64),
+        (256, 256),
         interpolation=cv2.INTER_AREA
     )
 
@@ -80,33 +91,45 @@ def predict(image_url, filename):
         cv2.COLOR_BGR2RGB
     )
 
+    # Preprocess image
     image = preprocess_image(small_image)
 
-    image_tensor = np.expand_dims(image, axis=0)
+    del input_image, small_image
+    gc.collect()
 
-    output = session.run(
-        None,
-        {input_name: image_tensor}
-    )[0]
+    # Create tensor
+    image_tensor = torch.from_numpy(image).unsqueeze(0)
 
-    prediction = output.squeeze()
+    del image
+    gc.collect()
+
+    # Run prediction
+    with torch.inference_mode():
+        output = model(image_tensor)
+
+    # Generate road mask
+    prediction = output.squeeze().cpu().numpy()
 
     road_mask = (
         (prediction > 0.5).astype(np.uint8) * 255
     )
 
+    # Resize mask to original image dimensions
     road_mask = cv2.resize(
         road_mask,
         (original_width, original_height),
         interpolation=cv2.INTER_NEAREST
     )
 
+    # Save predicted road mask
+    output_path2 = (
+        'static/res/' + Path(filename).stem + '.png'
+    )
+
     cv2.imwrite(output_path2, road_mask)
 
-    del input_image, small_image
-    del image, image_tensor, output
-    del prediction, road_mask
-
+    # Release memory
+    del image_tensor, output, prediction, road_mask
     gc.collect()
 
     return output_path1, output_path2
